@@ -1,0 +1,30 @@
+{
+  "name": "ato-rate-min",
+  "version": "1.0.0",
+  "description": "Min rate scraper for ATO exchange rates",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "run": "npm run build && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ato",
+    "rate"
+  ],
+  "author": "Daniel Morrison",
+  "license": "MIT",
+  "dependencies": {
+    "fetch": "^1.1.0",
+    "lodash": "^4.17.20",
+    "tabletojson": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.165",
+    "typescript": "^4.1.3"
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}
