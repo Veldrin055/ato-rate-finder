@@ -1,59 +1,43 @@
-import * as _ from 'lodash'
-import { Tabletojson } from 'tabletojson'
+import prompts from 'prompts'
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',]
+import { arrayWindow } from './arrayWindow'
+import { DateRate, getRates } from './ato'
+import { formatDate } from './dates'
 
-type TableRate = {
-  [key: string]: string
-}
-
-type DateRate = {
-  date: Date,
-  rate: number,
-}
-
-const runner = async () => {
-
-  const urls = [
-    'https://www.ato.gov.au/Tax-professionals/TP/Monthly-exchange-rates-for-1-July-2019-to-30-June-2020/',
-    'https://www.ato.gov.au/Tax-professionals/TP/1-July-2018-to-30-June-2019/',
-    'https://www.ato.gov.au/Tax-professionals/TP/1-July-2017-to-30-June-2018/',
-    'https://www.ato.gov.au/Tax-professionals/TP/1-July-2016-to-30-June-2017/',
-  ]
-
-
-  const tables: TableRate[][] = await Promise.all(urls.map(url => Tabletojson.convertUrl(url, { useFirstRowForHeadings: true })))
-
-  const flat = _.flattenDeep(tables)
-  const euro = _.filter(flat, (rate) => rate['Country'] === 'Europe' || rate['Country and currency'] === 'European euro')
-  const rates: TableRate[] = euro.map(rate => _.pickBy(rate, (_value, key) => key.includes('Average')))
-  const r: DateRate[] = _.flatten(rates.map(obj => Object.entries(obj).map(
-    ([key, value]) => {
-      const repl = encodeURI(key).replace(/%C2%A0/g, ' ')
-      const [month, year] = decodeURI(repl).split(' ')
-
-      const date = new Date()
-      date.setFullYear(Number.parseInt(year), months.indexOf(month), 1)
-      date.setHours(0, 1, 0, 0)
-      const rate = Number.parseFloat(value) || 0.0
-
-      return { date, rate }
-    }
-  )))
-
-  return r.sort((a, b) => {
-    return b.date.getTime() - a.date.getTime()
+const selectDate = async (dates: DateRate[]) => {
+  const response = await prompts({
+    type: 'select',
+    name: 'month',
+    message: 'Select date to average over',
+    choices: dates.map(({ date }, value) =>({ value, title: formatDate(date) }))  
   })
+
+  return response.month
 }
 
-runner()
-.then(rates => {
-  const best = _.maxBy(rates, 'rate')
+(async () => {
+  console.log('Downloading rates from ATO...')
+  const rates = await getRates()
+  console.log('Done')
+  const pivot = await selectDate(rates)
+  let i = 1
+  let best = 0
+  let msg = ''
+  console.log(`selected date is ${rates[pivot].date}`)
+  arrayWindow(rates, pivot, 12, (window) => {
+    // console.log(`run ${i++}=${JSON.stringify(window)}, size=${window.length}`)
+    const average = window.reduce((a, b) => (a + b.rate), 0) / window.length
+    // console.log(`run=${i++}, avg=${average}, from ${window[0].date} to ${window[window.length - 1].date}`)
+    if (average > best) {
+      best = average
+      msg = `best rate is ${best}, from ${formatDate(window[0].date)} to ${formatDate(window[window.length - 1].date)}`
+    }
+  })
   if (!best) {
     console.error('Could not find a valid rate')
   } else {
-    console.log(`best rate is ${best.rate} on ${best.date}`)
+    console.log(msg)
   }
-})
-.catch(err => console.error(err))
+})()
+
 
