@@ -1,7 +1,7 @@
 import prompts from 'prompts'
 
 import { arrayWindow } from './arrayWindow'
-import { DateRate, getRates } from './ato'
+import { getRates } from './ato'
 import { formatDate } from './dates'
 
 const selectDate = async (dates: DateRate[]) => {
@@ -20,7 +20,7 @@ const selectDate = async (dates: DateRate[]) => {
   const rates = await getRates()
   console.log('Done')
   const pivot = await selectDate(rates)
-  let i = 1
+
   let best = 0
   let msg = ''
   console.log(`selected date is ${rates[pivot].date}`)

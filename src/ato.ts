@@ -2,15 +2,6 @@ import * as _ from 'lodash'
 import { Tabletojson } from 'tabletojson'
 import { dateFromMY } from './dates'
 
-export type TableRate = {
-  [key: string]: string
-}
-
-export type DateRate = {
-  date: Date,
-  rate: number,
-}
-
 export const getRates = async () => {
 
   const urls = [
