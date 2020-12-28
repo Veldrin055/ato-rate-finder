@@ -15,10 +15,7 @@ const selectDate = async (dates: DateRate[]) => {
   return response.month
 }
 
-(async () => {
-  console.log('Downloading rates from ATO...')
-  const rates = await getRates()
-  console.log('Done')
+const findOptimalAverage = async (rates: DateRate[]) => {
   const pivot = await selectDate(rates)
 
   let best = 0
@@ -38,6 +35,26 @@ const selectDate = async (dates: DateRate[]) => {
   } else {
     console.log(msg)
   }
+}
+
+(async () => {
+  console.log('Downloading rates from ATO...')
+  const rates = await getRates()
+  console.log('Done')
+  let cont = true
+  while (cont) {
+    await findOptimalAverage(rates)
+    const toggle = await prompts({
+      type: 'toggle',
+      name: 'value',
+      initial: false,
+      message: 'Do another one?',
+      active: 'Yes',
+      inactive: 'No',
+    })
+    cont = toggle.value
+  }
+  
 })()
 
 
