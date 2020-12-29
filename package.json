@@ -1,6 +1,6 @@
 {
   "name": "ato-rate-min",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Min rate scraper for ATO exchange rates",
   "main": "./dist/index.js",
   "repository": {
@@ -16,7 +16,7 @@
     "run": "npm run build && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
-    "version": "npm run format && git add -A src",
+    "version": "git add -A src",
     "postversion": "git push && git push --tags"
   },
   "keywords": [
