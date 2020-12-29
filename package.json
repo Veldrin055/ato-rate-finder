@@ -2,10 +2,13 @@
   "name": "ato-rate-min",
   "version": "1.0.0",
   "description": "Min rate scraper for ATO exchange rates",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Veldrin055/ato-rate-finde.git"
+  },
+  "bin": {
+    "ato-rate-min": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",
