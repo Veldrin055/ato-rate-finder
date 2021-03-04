@@ -5,6 +5,7 @@ import { dateFromMY } from './dates'
 export const getRates = async () => {
 
   const urls = [
+    'https://www.ato.gov.au/Tax-professionals/TP/Monthly-exchange-rates-for-1-July-2020-to-30-June-2021/',
     'https://www.ato.gov.au/Tax-professionals/TP/Monthly-exchange-rates-for-1-July-2019-to-30-June-2020/',
     'https://www.ato.gov.au/Tax-professionals/TP/1-July-2018-to-30-June-2019/',
     'https://www.ato.gov.au/Tax-professionals/TP/1-July-2017-to-30-June-2018/',
